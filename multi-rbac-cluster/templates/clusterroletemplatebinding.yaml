@@ -1,0 +1,25 @@
+{{ $root := . }}
+{{- range $indexu, $user := .Values }}
+---
+{{- range $cluster, $role := $user.clusters }}
+apiVersion: management.cattle.io/v3
+Name: ctrb-{{ trunc 8 (sha256sum (printf "%s/%s" $root.Release.Namespace $user.principalName )) }}
+{{ if eq $cluster "local" }}
+Namespace: {{$cluster}}
+{{ else  }}
+{{/* Namespace: c-m-{{ trunc 8 (sha256sum (printf "%s/%s" $root.Release.Namespace $root.Values.cluster.name)) }} */}}
+Namespace: {{$cluster}}
+{{ end }}
+{{/* clusterName: c-m-{{ trunc 8 (sha256sum (printf "%s/%s" $root.Release.Namespace $root.Values.cluster.name)) }} */}}
+metadata:
+  name: ctrb-{{ trunc 8 (sha256sum (printf "%s/%s" $root.Release.Namespace $user.principalName )) }}
+  namespace: {{$cluster}}
+clusterName: {{$cluster}}
+kind: ClusterRoleTemplateBinding
+roleTemplateName: {{ $role }}
+userPrincipalName: {{ $user.principal }}
+
+---
+
+{{- end }}
+{{- end }}

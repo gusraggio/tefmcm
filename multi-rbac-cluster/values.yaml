@@ -1,0 +1,8 @@
+user:
+  name: test
+  id: u-lhjsb
+  principal: local://u-lhjsb
+  clusters: {
+    local: cluster-member,
+    c-m-xft945rl: cluster-member
+  }
